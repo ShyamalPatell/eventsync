@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
-from app.extensions import db
+from app.extensions import db, migrate
 
 load_dotenv()
 
@@ -14,6 +14,11 @@ def create_app():
 
     CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
     db.init_app(app)
+    migrate.init_app(app, db)
+
+
+    from app.models import user  # noqa: F401
+
 
     from app.routes.health import health_bp
     app.register_blueprint(health_bp, url_prefix="/api")
